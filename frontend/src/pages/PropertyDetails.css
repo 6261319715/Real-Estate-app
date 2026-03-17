@@ -1,0 +1,146 @@
+.back-btn {
+  margin-bottom: 1.5rem;
+}
+
+.detail-loading,
+.detail-error {
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-text-muted);
+}
+
+.detail-error {
+  color: var(--color-error);
+}
+
+.property-detail {
+  display: grid;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .property-detail {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.property-detail-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.property-detail-main-image {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  aspect-ratio: 16/10;
+}
+
+.property-detail-main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.property-detail-thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.property-detail-thumb {
+  width: 72px;
+  height: 72px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--color-border);
+  cursor: pointer;
+}
+
+.property-detail-thumb.active {
+  border-color: var(--color-accent);
+}
+
+.property-detail-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.property-detail-type {
+  text-transform: capitalize;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.05em;
+}
+
+.property-detail-content h1 {
+  font-size: 1.35rem;
+  margin: 0.35rem 0 0.5rem;
+}
+@media (min-width: 640px) {
+  .property-detail-content h1 {
+    font-size: 1.75rem;
+  }
+}
+
+.property-detail-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.property-detail-location {
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+}
+
+.property-detail-meta {
+  display: flex;
+  gap: 1.25rem;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+.property-detail-description h2,
+.property-detail-seller h2 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-text-muted);
+}
+
+.property-detail-description p {
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.property-detail-seller {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.seller-email {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+}
+
+.login-prompt {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+.login-prompt a {
+  color: var(--color-accent);
+}

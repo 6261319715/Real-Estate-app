@@ -1,0 +1,52 @@
+.home-hero {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.home-hero h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.home-hero p {
+  color: var(--color-text-muted);
+}
+
+.home-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.25rem;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+}
+
+.filter-select,
+.filter-input {
+  padding: 0.6rem 1rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  min-width: 140px;
+}
+
+.filter-input {
+  flex: 1;
+  min-width: 120px;
+}
+
+.property-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.home-loading,
+.home-empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 3rem;
+}
