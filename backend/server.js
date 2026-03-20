@@ -23,15 +23,12 @@ if (!process.env.JWT_SECRET) {
 
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/db');
+const connectDB = require('./lib/db');
 
 const authRoutes = require('./routes/auth');
 const propertyRoutes = require('./routes/properties');
 const contactRoutes = require('./routes/contact');
 const plansRoutes = require('./routes/plans');
-
-// Connect to MongoDB
-connectDB();
 
 const app = express();
 
@@ -42,6 +39,17 @@ if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(uploadsDir));
+
+// Ensure a reusable DB connection for every API request (serverless-safe).
+app.use('/api', async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error('Database unavailable for request:', req.method, req.originalUrl, error.message);
+    res.status(503).json({ message: 'Database connection unavailable. Please try again.' });
+  }
+});
 
 // API routes
 app.use('/api/auth', authRoutes);
@@ -75,14 +83,19 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Health check: http://localhost:${PORT}/api/health`);
-}).on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`ERROR: Port ${PORT} is already in use. Stop the other process or set PORT in .env`);
-  } else {
-    console.error('Server failed to start:', err.message);
-  }
-  process.exit(1);
-});
+
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Health check: http://localhost:${PORT}/api/health`);
+  }).on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`ERROR: Port ${PORT} is already in use. Stop the other process or set PORT in .env`);
+    } else {
+      console.error('Server failed to start:', err.message);
+    }
+    process.exit(1);
+  });
+}
+
+module.exports = app;
