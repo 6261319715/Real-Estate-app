@@ -2,9 +2,15 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 
-const uploadDir = path.join(__dirname, '..', 'uploads');
+const uploadDir = process.env.VERCEL === '1'
+  ? path.join('/tmp', 'uploads')
+  : path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+  try {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  } catch (error) {
+    console.error('Upload dir setup failed:', error.message);
+  }
 }
 
 const storage = multer.diskStorage({

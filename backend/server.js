@@ -36,8 +36,17 @@ const plansRoutes = require('./routes/plans');
 
 const app = express();
 
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+const isVercel = process.env.VERCEL === '1';
+const uploadsDir = isVercel
+  ? path.join('/tmp', 'uploads')
+  : path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  try {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  } catch (error) {
+    console.error('Uploads directory init failed:', error.message);
+  }
+}
 
 // Middleware
 app.use(cors());
@@ -96,7 +105,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
 const PORT = process.env.PORT || 5000;
 
-if (process.env.VERCEL !== '1') {
+if (!isVercel) {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`Health check: http://localhost:${PORT}/api/health`);
