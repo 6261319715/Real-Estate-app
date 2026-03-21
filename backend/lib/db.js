@@ -5,6 +5,14 @@ const MONGODB_URI = process.env.MONGODB_URI;
 if (!MONGODB_URI) {
   throw new Error('MONGODB_URI is not set. Please configure it in environment variables.');
 }
+if (
+  process.env.VERCEL === '1' &&
+  /localhost|127\.0\.0\.1/i.test(MONGODB_URI)
+) {
+  throw new Error(
+    'Invalid MONGODB_URI for Vercel. Use a cloud MongoDB URI (MongoDB Atlas), not localhost.'
+  );
+}
 
 const globalCache = globalThis;
 

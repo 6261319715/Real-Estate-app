@@ -9,15 +9,19 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const fs = require('fs');
 
-// Check required env before starting
+const startupConfigErrors = [];
 if (!process.env.MONGODB_URI) {
-  console.error('ERROR: MONGODB_URI is not set in .env');
-  console.error('Create backend/.env from .env.example and set MONGODB_URI (e.g. mongodb://localhost:27017/realestate)');
-  process.exit(1);
+  startupConfigErrors.push(
+    'MONGODB_URI is missing. Configure it in environment variables.'
+  );
 }
 if (!process.env.JWT_SECRET) {
-  console.error('ERROR: JWT_SECRET is not set in .env');
-  console.error('Add JWT_SECRET to backend/.env (any long random string for development)');
+  startupConfigErrors.push(
+    'JWT_SECRET is missing. Configure it in environment variables.'
+  );
+}
+if (startupConfigErrors.length && process.env.VERCEL !== '1') {
+  startupConfigErrors.forEach((msg) => console.error('ERROR:', msg));
   process.exit(1);
 }
 
@@ -40,16 +44,24 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(uploadsDir));
 
-// Ensure a reusable DB connection for every API request (serverless-safe).
-app.use('/api', async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (error) {
-    console.error('Database unavailable for request:', req.method, req.originalUrl, error.message);
-    res.status(503).json({ message: 'Database connection unavailable. Please try again.' });
-  }
-});
+if (startupConfigErrors.length) {
+  app.use('/api', (req, res) => {
+    res.status(500).json({
+      message: `Server configuration error: ${startupConfigErrors.join(' ')}`,
+    });
+  });
+} else {
+  // Ensure a reusable DB connection for every API request (serverless-safe).
+  app.use('/api', async (req, res, next) => {
+    try {
+      await connectDB();
+      next();
+    } catch (error) {
+      console.error('Database unavailable for request:', req.method, req.originalUrl, error.message);
+      res.status(503).json({ message: 'Database connection unavailable. Please try again.' });
+    }
+  });
+}
 
 // API routes
 app.use('/api/auth', authRoutes);
